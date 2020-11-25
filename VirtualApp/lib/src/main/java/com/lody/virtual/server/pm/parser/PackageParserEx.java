@@ -224,6 +224,17 @@ public class PackageParserEx {
         cache.mAppMetaData = p.mAppMetaData;
         cache.configPreferences = p.configPreferences;
         cache.reqFeatures = p.reqFeatures;
+
+        // for split apks
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            cache.splitNames = p.splitNames;
+            cache.codePath = p.codePath;
+            cache.baseCodePath = p.baseCodePath;
+            cache.splitCodePaths = p.splitCodePaths;
+        }
+
+        cache.usesOptionalLibraries = p.usesOptionalLibraries;
+
         addOwner(cache);
         return cache;
     }
@@ -241,8 +252,9 @@ public class PackageParserEx {
         ai.publicSourceDir = ps.apkPath;
         ai.sourceDir = ps.apkPath;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ai.splitSourceDirs = new String[]{ps.apkPath};
-            ai.splitPublicSourceDirs = ai.splitSourceDirs;
+            ai.splitSourceDirs = ps.splitCodePaths;
+            ai.splitPublicSourceDirs = ps.splitCodePaths;
+
             ApplicationInfoL.scanSourceDir.set(ai, ai.dataDir);
             ApplicationInfoL.scanPublicSourceDir.set(ai, ai.dataDir);
             String hostPrimaryCpuAbi = ApplicationInfoL.primaryCpuAbi.get(VirtualCore.get().getContext().getApplicationInfo());

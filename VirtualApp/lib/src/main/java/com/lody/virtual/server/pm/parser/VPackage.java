@@ -65,6 +65,21 @@ public class VPackage implements Parcelable {
     public ArrayList<FeatureInfo> reqFeatures = null;
     public Object mExtras;
 
+    public String[] splitNames;
+    public ArrayList<String> usesOptionalLibraries;
+
+    /**
+     * Path where this package was found on disk. For monolithic packages
+     * this is path to single base APK file; for cluster packages this is
+     * path to the cluster directory.
+     */
+    public String codePath;
+
+    /** Path of base APK */
+    public String baseCodePath;
+    /** Paths of any split APKs, ordered by parsed splitName */
+    public String[] splitCodePaths;
+
     public VPackage() {
     }
 
@@ -117,6 +132,13 @@ public class VPackage implements Parcelable {
         this.mSharedUserLabel = in.readInt();
         this.configPreferences = in.createTypedArrayList(ConfigurationInfo.CREATOR);
         this.reqFeatures = in.createTypedArrayList(FeatureInfo.CREATOR);
+
+        this.splitNames = in.createStringArray();
+        this.codePath = in.readString();
+        this.baseCodePath = in.readString();
+        this.splitCodePaths = in.createStringArray();
+
+        this.usesOptionalLibraries = in.createStringArrayList();
     }
 
     @Override
@@ -223,6 +245,13 @@ public class VPackage implements Parcelable {
         dest.writeInt(this.mSharedUserLabel);
         dest.writeTypedList(this.configPreferences);
         dest.writeTypedList(this.reqFeatures);
+
+        dest.writeStringArray(this.splitNames);
+        dest.writeString(this.codePath);
+        dest.writeString(this.baseCodePath);
+        dest.writeStringArray(this.splitCodePaths);
+
+        dest.writeStringList(this.usesOptionalLibraries);
     }
 
     public static class ActivityIntentInfo extends IntentInfo {
